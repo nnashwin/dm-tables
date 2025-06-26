@@ -1,5 +1,5 @@
-local Popup = require("plenary.popup")
 local data = require("dm-tables.data")
+local ui = require("dm-tables.ui")
 local utils = require("dm-tables.utils")
 
 local M = {}
@@ -9,31 +9,6 @@ math.randomseed(os.time())
 math.random()
 math.random()
 math.random()
-
-local function create_window(force_save)
-	local config = {}
-	local width = config.width or 80
-	local height = config.height or 50
-	local borderchars = config.borderchars or { "─", "│", "─", "│", "╭", "╮", "╯", "╰" }
-	local bufnr = vim.api.nvim_create_buf(false, false)
-
-	local Harpoon_win_id, win = Popup.create(bufnr, {
-		title = "DmTables",
-		highlight = "TablesWindow",
-		line = math.floor(((vim.o.lines - height) / 2) - 1),
-		col = math.floor((vim.o.columns - width) / 2),
-		minwidth = width,
-		minheight = height,
-		borderchars = borderchars,
-	})
-
-	vim.api.nvim_win_set_option(win.border.win_id, "winhl", "Normal:TablesBorder")
-
-	return {
-		bufnr = bufnr,
-		win_id = Harpoon_win_id,
-	}
-end
 
 local function has_content(lines)
 	local has_content = false
@@ -47,12 +22,15 @@ local function has_content(lines)
 	return has_content
 end
 
-vim.api.nvim_create_user_command("CreateTable", function()
+function M.create_table()
 	local lines = utils.get_visual_selection()
 	local encoded_lines = vim.json.encode(utils.get_visual_selection())
 
 	if not has_content(lines) then
-		vim.notify("Selected text is empty; must select valid lines to create a table", vim.log.levels.ERROR)
+		vim.notify(
+			"Selected text is empty; selection must contain no blank lines to create a table",
+			vim.log.levels.ERROR
+		)
 		return
 	end
 
@@ -74,8 +52,11 @@ vim.api.nvim_create_user_command("CreateTable", function()
 	db_data[dm_table_name] = encoded_lines
 
 	data.write_to_db(vim.json.encode(db_data))
-end, { range = true })
+end
 
-vim.keymap.set("v", "<leader>t", ":CreateTable<CR>")
+function M.show_tables()
+	print("show_tables()")
+	ui.toggle_show_tables()
+end
 
 return M
