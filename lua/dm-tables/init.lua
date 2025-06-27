@@ -36,7 +36,10 @@ function M.create_table()
 
 	local dm_table_name = vim.fn.input("Name to use for this stored table: ")
 
-	local db_data = vim.json.decode(data.read_from_db())
+	local okay, db_data = pcall(vim.json.decode(data.read_from_db()))
+	if not okay then
+		db_data = {}
+	end
 
 	if db_data[dm_table_name] ~= nil then
 		vim.notify(

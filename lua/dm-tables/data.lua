@@ -9,18 +9,6 @@ local function get_db_path()
 	return plugin_dir .. "/tables.db"
 end
 
----@return nil
-function M.write_to_db(text)
-	local db_path = get_db_path()
-	local file = io.open(db_path, "wb")
-
-	if file then
-		file:write(text)
-
-		file:close()
-	end
-end
-
 ---@return string
 function M.read_from_db()
 	local db_path = get_db_path()
@@ -34,6 +22,94 @@ function M.read_from_db()
 	file:close()
 
 	return content
+end
+
+---@return {}
+function M.get_table_keys()
+	local db_path = get_db_path()
+	local file = io.open(db_path, "rb")
+
+	if not file then
+		return nil
+	end
+
+	local content = file:read("*a")
+
+	local okay, content_table = pcall(vim.json.decode, content)
+
+	if not okay then
+		return nil
+	end
+
+	local keyset = {}
+	local n = 0
+
+	for k, _ in pairs(content_table) do
+		n = n + 1
+		keyset[n] = k
+	end
+
+	table.sort(keyset)
+
+	file:close()
+
+	return keyset
+end
+
+---@return nil
+function M.delete_table_by_key(key)
+	local db_path = get_db_path()
+	local file = io.open(db_path, "wb")
+
+	if not file then
+		return nil
+	end
+
+	local content = file:read("*a")
+
+	local content_table = vim.json.decode(content)
+
+	print("content_table_before: ", vim.json.encode(content_table))
+
+	content_table[key] = nil
+
+	print("content_table_after: ", vim.json.encode(content_table))
+
+	if file then
+		file:write(vim.json.encode(content_table))
+
+		file:close()
+	end
+end
+
+---@return {}
+function M.get_table_by_key(key)
+	local db_path = get_db_path()
+	local file = io.open(db_path, "rb")
+
+	if not file then
+		return nil
+	end
+
+	local content = file:read("*a")
+
+	local content_table = vim.json.decode(content)
+
+	file:close()
+
+	return vim.json.decode(content_table[key])
+end
+
+---@return nil
+function M.write_to_db(text)
+	local db_path = get_db_path()
+	local file = io.open(db_path, "wb")
+
+	if file then
+		file:write(text)
+
+		file:close()
+	end
 end
 
 return M
