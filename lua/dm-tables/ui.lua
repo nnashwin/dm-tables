@@ -26,11 +26,12 @@ local blocked_keys = {
 	"X",
 	"v",
 	"V",
+	"<C-a>",
+	"<C-r>",
 	"<C-v>",
 	"p",
 	"P",
 	"u",
-	"<C-r>",
 }
 
 local function close_menu()
@@ -103,11 +104,6 @@ function M.toggle_show_tables()
 	for _, key in ipairs(blocked_keys) do
 		vim.keymap.set("n", key, "<Nop>", buf_opts)
 	end
-
-	-- add allowed operations within the buffer
-	vim.keymap.set("n", "<C-a>", function()
-		M.toggle_show_tables()
-	end, buf_opts)
 
 	vim.keymap.set("n", "dd", function()
 		local line_num = vim.api.nvim_win_get_cursor(0)[1]

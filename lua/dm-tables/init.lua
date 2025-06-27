@@ -36,6 +36,17 @@ function M.create_table()
 
 	local dm_table_name = vim.fn.input("Name to use for this stored table: ")
 
+	if dm_table_name == "" then
+		vim.notify(
+			string.format(
+				"\nYou can not have a blank table name; create a unique name that fits your random table",
+				dm_table_name
+			),
+			vim.log.levels.ERROR
+		)
+		return
+	end
+
 	local okay, db_data = pcall(vim.json.decode, data.read_from_db())
 	if not okay then
 		db_data = {}
