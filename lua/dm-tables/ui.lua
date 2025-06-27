@@ -82,7 +82,7 @@ function M.toggle_show_tables()
 
 	contents = data.get_table_keys()
 
-	if contents == nil then
+	if contents == nil or #contents == 0 then
 		vim.notify(
 			"There are currently no tables to display; please create a table and then run the command again",
 			vim.log.levels.ERROR
@@ -117,7 +117,7 @@ function M.toggle_show_tables()
 			vim.fn.input(string.format("Are you want to delete the table `%s`?\nType `y` to confirm: ", line_text))
 
 		if confirm_delete_table == "y" then
-			print("delete the table")
+			data.delete_table_by_key(line_text)
 		end
 		M.toggle_show_tables()
 	end, buf_opts)

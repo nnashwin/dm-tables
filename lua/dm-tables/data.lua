@@ -36,7 +36,6 @@ function M.get_table_keys()
 	local content = file:read("*a")
 
 	local okay, content_table = pcall(vim.json.decode, content)
-
 	if not okay then
 		return nil
 	end
@@ -59,7 +58,7 @@ end
 ---@return nil
 function M.delete_table_by_key(key)
 	local db_path = get_db_path()
-	local file = io.open(db_path, "wb")
+	local file = io.open(db_path, "r")
 
 	if not file then
 		return nil
@@ -67,18 +66,18 @@ function M.delete_table_by_key(key)
 
 	local content = file:read("*a")
 
-	local content_table = vim.json.decode(content)
+	file:close()
 
-	print("content_table_before: ", vim.json.encode(content_table))
+	local content_table = vim.json.decode(content)
 
 	content_table[key] = nil
 
-	print("content_table_after: ", vim.json.encode(content_table))
+	local output_file = io.open(db_path, "w")
 
-	if file then
-		file:write(vim.json.encode(content_table))
+	if output_file then
+		output_file:write(vim.json.encode(content_table))
 
-		file:close()
+		output_file:close()
 	end
 end
 
