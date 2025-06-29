@@ -1,4 +1,5 @@
 local data = require("dm-tables.data")
+local log = require("dm-tables.dev").log
 local ui = require("dm-tables.ui")
 local utils = require("dm-tables.utils")
 
@@ -69,7 +70,7 @@ function M.create_table()
 end
 
 function M.show_tables()
-	print("show_tables()")
+	log.trace("show_tables()")
 	ui.toggle_show_tables()
 end
 

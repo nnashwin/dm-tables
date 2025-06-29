@@ -100,6 +100,36 @@ function M.get_table_by_key(key)
 end
 
 ---@return nil
+function M.update_table_key(original_table_key, new_table_key)
+	local db_path = get_db_path()
+	local file = io.open(db_path, "r")
+
+	if not file then
+		return nil
+	end
+
+	local content = file:read("*a")
+
+	file:close()
+
+	local content_table = vim.json.decode(content)
+
+	local random_table_content = content_table[original_table_key]
+
+	content_table[new_table_key] = random_table_content
+
+	content_table[original_table_key] = nil
+
+	local output_file = io.open(db_path, "w")
+
+	if output_file then
+		output_file:write(vim.json.encode(content_table))
+
+		output_file:close()
+	end
+end
+
+---@return nil
 function M.write_to_db(text)
 	local db_path = get_db_path()
 	local file = io.open(db_path, "wb")

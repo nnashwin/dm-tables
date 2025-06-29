@@ -1,6 +1,6 @@
 local Popup = require("plenary.popup")
 local data = require("dm-tables.data")
-local utils = require("dm-tables.utils")
+local log = require("dm-tables.dev").log
 
 local M = {}
 
@@ -18,7 +18,6 @@ local blocked_keys = {
 	"C",
 	"s",
 	"S",
-	"r",
 	"R",
 	"dd",
 	"D",
@@ -35,7 +34,7 @@ local blocked_keys = {
 }
 
 local function close_menu()
-	print("close_menu()")
+	log.trace("close_menu()")
 	vim.api.nvim_buf_delete(DMTables_bufh, { force = true })
 
 	DMTablesId_win_id = nil
@@ -68,8 +67,7 @@ local function create_window()
 end
 
 function M.toggle_show_tables()
-	--TODO replace with logger later
-	print("toggle_show_tables()")
+	log.trace("toggle_show_tables()")
 	if DMTablesId_win_id ~= nil and vim.api.nvim_win_is_valid(DMTablesId_win_id) then
 		close_menu()
 		return
@@ -105,6 +103,26 @@ function M.toggle_show_tables()
 		vim.keymap.set("n", key, "<Nop>", buf_opts)
 	end
 
+	vim.keymap.set("n", "r", function()
+		log.trace("rename")
+		local line_num = vim.api.nvim_win_get_cursor(0)[1]
+		local line_text = vim.api.nvim_buf_get_lines(0, line_num - 1, line_num, false)[1]
+		log.trace("line_text: ", line_text)
+		local rename_text = vim.fn.input("New table name: ", line_text)
+
+		if rename_text ~= line_text then
+			data.update_table_key(line_text, rename_text)
+
+			--re-render lines within the buffer after the operation was completed
+			contents = data.get_table_keys()
+			print("contents: ", contents)
+			vim.api.nvim_buf_set_lines(DMTables_bufh, 0, #contents, true, contents)
+			log.warn("contents: ", contents)
+			print("contents: ", contents)
+			return
+		end
+	end, buf_opts)
+
 	vim.keymap.set("n", "dd", function()
 		local line_num = vim.api.nvim_win_get_cursor(0)[1]
 		local line_text = vim.api.nvim_buf_get_lines(0, line_num - 1, line_num, false)[1]
@@ -114,8 +132,12 @@ function M.toggle_show_tables()
 
 		if confirm_delete_table == "y" then
 			data.delete_table_by_key(line_text)
+
+			--re-render lines within the buffer after the operation was completed
+			contents = data.get_table_keys()
+			vim.api.nvim_buf_set_lines(DMTables_bufh, line_num - 1, line_num, false, {})
+			return
 		end
-		M.toggle_show_tables()
 	end, buf_opts)
 
 	-- add allowed operations within the buffer
