@@ -18,6 +18,7 @@ local blocked_keys = {
 	"C",
 	"s",
 	"S",
+	"r",
 	"R",
 	"dd",
 	"D",

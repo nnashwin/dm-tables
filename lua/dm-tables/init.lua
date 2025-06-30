@@ -25,7 +25,7 @@ end
 
 function M.create_table()
 	local lines = utils.get_visual_selection()
-	local encoded_lines = vim.json.encode(utils.get_visual_selection())
+	local encoded_lines = vim.json.encode(lines)
 
 	if not has_content(lines) then
 		vim.notify(

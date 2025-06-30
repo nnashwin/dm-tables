@@ -1,9 +1,13 @@
 *** TODOS
-**** TODO Add rename functionality to a table name
-**** TODO Work on bug where the first time I copy the text in a table it doesn't work
+**** DONE Add rename functionality to a table name
+     CLOSED: [2025-06-29 日 12:53]
+**** DONE Work on bug where the first time I copy the text in a table it doesn't work
+     CLOSED: [2025-06-30 一 14:33]
 ****** Saw that it was not working backwards and forwards sometimes
+****** Updated it to use the '.' and 'v' selectors in the getpos function rather than the '< and '> registers
 **** Add more in-depth readme of the tool
-**** Test installing new
-**** Logo for the tool (AI generated is okay)
+**** Test installing on a new system
+**** Update readme when able to do this correctly
+**** Add Logo for the tool (AI generated is okay)
 **** Help buffer when using tool
-**** Jump to table functionality (open buffer to table)
+**** Jump to table functionality (open buffer to table file used on local machine if it exists)
