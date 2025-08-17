@@ -96,7 +96,7 @@ function M.get_table_by_key(key)
 
 	file:close()
 
-	return vim.json.decode(content_table[key])
+	return content_table[key]
 end
 
 ---@return nil

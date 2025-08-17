@@ -22,6 +22,8 @@ local blocked_keys = {
 	"R",
 	"dd",
 	"D",
+	"g",
+	"d",
 	"x",
 	"X",
 	"v",
@@ -92,6 +94,7 @@ function M.toggle_show_tables()
 
 	--- Populate buffer with keys
 	vim.api.nvim_win_set_option(DMTablesId_win_id, "number", true)
+	vim.api.nvim_win_set_option(DMTablesId_win_id, "relativenumber", true)
 	vim.api.nvim_buf_set_name(DMTables_bufh, "dm-tables-menu")
 	vim.api.nvim_buf_set_lines(DMTables_bufh, 0, #contents, false, contents)
 	vim.api.nvim_buf_set_option(DMTables_bufh, "filetype", "dm-table-selection")
@@ -116,10 +119,8 @@ function M.toggle_show_tables()
 
 			--re-render lines within the buffer after the operation was completed
 			contents = data.get_table_keys()
-			print("contents: ", contents)
 			vim.api.nvim_buf_set_lines(DMTables_bufh, 0, #contents, true, contents)
 			log.warn("contents: ", contents)
-			print("contents: ", contents)
 			return
 		end
 	end, buf_opts)
@@ -141,14 +142,19 @@ function M.toggle_show_tables()
 		end
 	end, buf_opts)
 
+	vim.keymap.set("n", "gd", function()
+		vim.notify("hit jump to file", vim.log.levels.DEBUG)
+	end)
+
 	-- add allowed operations within the buffer
 	vim.keymap.set("n", "<CR>", function()
 		local line_num = vim.api.nvim_win_get_cursor(0)[1]
 		local line_text = vim.api.nvim_buf_get_lines(0, line_num - 1, line_num, false)[1]
 
 		local dm_table = data.get_table_by_key(line_text)
-		local random_idx = math.random(#dm_table)
-		local random_element = dm_table[random_idx]
+		local entries = vim.json.decode(dm_table["entries"])
+		local random_idx = math.random(#entries)
+		local random_element = entries[random_idx]
 
 		vim.fn.setreg('"', random_element)
 

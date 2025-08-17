@@ -24,6 +24,8 @@ local function has_content(lines)
 end
 
 function M.create_table()
+	local filename = vim.api.nvim_buf_get_name(0)
+	vim.notify(string.format("filename: %s\n", filename), vim.log.levels.INFO)
 	local lines = utils.get_visual_selection()
 	local encoded_lines = vim.json.encode(lines)
 
@@ -63,8 +65,11 @@ function M.create_table()
 		)
 		return
 	end
+	local record = {}
+	record["file_path"] = vim.api.nvim_buf_get_name(0)
+	record["entries"] = encoded_lines
 
-	db_data[dm_table_name] = encoded_lines
+	db_data[dm_table_name] = record
 
 	data.write_to_db(vim.json.encode(db_data))
 end
