@@ -17,4 +17,8 @@ function M.get_visual_selection()
 	return lines
 end
 
+function M.is_string_empty(s)
+	return s == nil or s == ""
+end
+
 return M

@@ -3,6 +3,8 @@ local log = require("dm-tables.dev").log
 local ui = require("dm-tables.ui")
 local utils = require("dm-tables.utils")
 
+local EMPTY_BUFFER_STRING = "EMPTY_BUFFER"
+
 local M = {}
 
 -- Seed RNG and pop first few values
@@ -25,7 +27,10 @@ end
 
 function M.create_table()
 	local filename = vim.api.nvim_buf_get_name(0)
-	vim.notify(string.format("filename: %s\n", filename), vim.log.levels.INFO)
+	if utils.is_string_empty(filename) then
+		filename = EMPTY_BUFFER_STRING
+	end
+
 	local lines = utils.get_visual_selection()
 	local encoded_lines = vim.json.encode(lines)
 
