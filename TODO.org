@@ -3,11 +3,17 @@
      CLOSED: [2025-06-29 日 12:53]
 **** DONE Work on bug where the first time I copy the text in a table it doesn't work
      CLOSED: [2025-06-30 一 14:33]
-****** Saw that it was not working backwards and forwards sometimes
-****** Updated it to use the '.' and 'v' selectors in the getpos function rather than the '< and '> registers
-**** Add more in-depth readme of the tool
+****** DONE Saw that it was not working backwards and forwards sometimes
+       CLOSED: [2025-08-19 二 13:18]
+****** DONE Updated it to use the '.' and 'v' selectors in the getpos function rather than the '< and '> registers
+       CLOSED: [2025-08-19 二 13:18]
 **** Test installing on a new system
-**** Update readme when able to do this correctly
-**** Add Logo for the tool (AI generated is okay)
-**** Help buffer when using tool
+****** Test installing on a new system
+**** Add more in-depth readme of the tool
+****** Add more in-depth readme of the tool
 **** Jump to table functionality (open buffer to table file used on local machine if it exists)
+**** Add Help buffer to the Neovim version of the tool
+**** Start researching / working on the VS Code version of the tool
+**** Start researching / working on the Obsidian version of the tool
+**** Add Logo for the tool (AI generated is okay)
+**** Update readme when able to do this correctly
